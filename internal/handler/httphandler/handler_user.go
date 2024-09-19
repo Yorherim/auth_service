@@ -60,6 +60,19 @@ func SignIn(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	userInfo, err := service.GetUserFullInfoByLogin(input.Login)
+	if err != nil {
+		resp.WriteHeader(http.StatusNotFound)
+		respBody.SetError(err)
+		return
+	}
+
+	if userInfo.Blocked {
+		resp.WriteHeader(http.StatusForbidden)
+		respBody.SetError(errors.New("you are blocked"))
+		return
+	}
+
 	userToken, err := service.SignIn(&input)
 	if err != nil {
 		resp.WriteHeader(http.StatusNotFound)

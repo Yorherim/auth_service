@@ -13,11 +13,15 @@ func NewRouter() *http.ServeMux {
 	router.Handle("/sign_up", CORS(LogUser(http.HandlerFunc(SignUp))))
 	router.Handle("/sign_in", CORS(LogUser(http.HandlerFunc(SignIn))))
 
-	router.Handle("/get_user_info", CORS(Auth(LogUser(http.HandlerFunc(GetUserInfo)))))
-	router.Handle("/set_user_info", CORS(Auth(LogUser(http.HandlerFunc(SetUserInfo)))))
-	router.Handle("/change_psw", CORS(Auth(LogUser(http.HandlerFunc(ChangePsw)))))
+	router.Handle("/get_user_info", CORS(Auth(IsBlocked(LogUser(http.HandlerFunc(GetUserInfo))))))
+	router.Handle("/set_user_info", CORS(Auth(IsBlocked(LogUser(http.HandlerFunc(SetUserInfo))))))
+	router.Handle("/change_psw", CORS(Auth(IsBlocked(LogUser(http.HandlerFunc(ChangePsw))))))
+
 	// admin handlers
-	router.Handle("/admin/get_user_info", CORS(Auth(isAdmin(LogUser(http.HandlerFunc(AdminGetUserInfo))))))
+	router.Handle("/admin/get_user_info", CORS(Auth(IsBlocked(isAdmin(LogUser(http.HandlerFunc(AdminGetUserInfo)))))))
+	router.Handle("/admin/block_user", CORS(Auth(IsBlocked(isAdmin(LogUser(http.HandlerFunc(AdminBlockUser)))))))
+	router.Handle("/admin/set_role_to_user", CORS(Auth(IsBlocked(isAdmin(LogUser(http.HandlerFunc(AdminSetRoleToUser)))))))
+	router.Handle("/admin/change_password", CORS(Auth(IsBlocked(isAdmin(LogUser(http.HandlerFunc(AdminChangePsw)))))))
 
 	router.Handle("/v2/get_user_info", CORS(Auth(LogUser(http.HandlerFunc(GetUserInfoV2)))))
 
