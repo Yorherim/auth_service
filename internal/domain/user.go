@@ -5,6 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 const (
 	UserRoleDefault = "user"
 	UserRoleAdmin   = "admin"
+	UserRoleRoot    = "root"
 )
 
 type User struct {
@@ -13,6 +14,8 @@ type User struct {
 	Password string             `json:"password"`
 	Name     string             `json:"name"`
 	Role     string             `json:"role"`
+	Blocked  bool               `json:"blocked"`
+	Email    string             `json:"email"`
 }
 
 type UserInfo struct {

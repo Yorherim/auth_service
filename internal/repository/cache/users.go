@@ -72,6 +72,19 @@ func (c *UserCache) GetUser(id primitive.ObjectID) (*domain.User, error) {
 	return user, nil
 }
 
+func (c *UserCache) GetUserByLogin(login string) (*domain.User, error) {
+	c.mtx.RLock()
+	for _, user := range c.userPull {
+		if user.Login == login {
+			c.mtx.RUnlock()
+			return user, nil
+		}
+	}
+	c.mtx.RUnlock()
+
+	return nil, errors.New("user not found")
+}
+
 func (c *UserCache) SetUser(newUserInfo *domain.User) error {
 
 	c.mtx.Lock()

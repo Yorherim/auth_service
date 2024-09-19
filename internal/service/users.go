@@ -123,8 +123,35 @@ func GetUserFullInfo(id primitive.ObjectID) (*domain.User, error) {
 	return user, err
 }
 
+func GetUserFullInfoByLogin(login string) (*domain.User, error) {
+	user, err := users.GetUserByLogin(login)
+	return user, err
+}
+
 func GetUserIDByToken(token string) (*primitive.ObjectID, error) {
 	return tokens.GetUserByToken(token)
+}
+
+func BlockUser(id primitive.ObjectID, blocked bool) error {
+	user, err := users.GetUser(id)
+	if err != nil {
+		return err
+	}
+
+	user.Blocked = blocked
+
+	return users.SetUser(user)
+}
+
+func SetRoleToUser(id primitive.ObjectID, role string) error {
+	user, err := users.GetUser(id)
+	if err != nil {
+		return err
+	}
+
+	user.Role = role
+
+	return users.SetUser(user)
 }
 
 func hash(str string) string {

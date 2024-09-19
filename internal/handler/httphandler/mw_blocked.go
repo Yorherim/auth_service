@@ -1,14 +1,13 @@
 package httphandler
 
 import (
-	"authservice/internal/domain"
 	"authservice/internal/service"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
-func isAdmin(next http.Handler) http.Handler {
+func IsBlocked(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 
 		id := req.Header.Get(HeaderUserID)
@@ -19,17 +18,17 @@ func isAdmin(next http.Handler) http.Handler {
 			resp.WriteHeader(http.StatusInternalServerError)
 
 			respBody := &HTTPResponse{}
-			respBody.SetError(errors.New("can not find user by id"))
+			respBody.SetError(err)
 			resp.Write(respBody.Marshall())
 
 			return
 		}
 
-		if userInfo.Role != domain.UserRoleAdmin && userInfo.Role != domain.UserRoleRoot {
+		if userInfo.Blocked {
 			resp.WriteHeader(http.StatusForbidden)
 
 			respBody := &HTTPResponse{}
-			respBody.SetError(errors.New("user is not admin"))
+			respBody.SetError(errors.New("you are blocked"))
 			resp.Write(respBody.Marshall())
 
 			return

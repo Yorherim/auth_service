@@ -7,7 +7,8 @@ import (
 )
 
 func makeDump(filename string, pull any) {
-	data, err := json.Marshal(pull)
+	// поменял для удобства чтения файлов
+	data, err := json.MarshalIndent(pull, "", " ")
 	if err != nil {
 		log.Println("ERROR can not marshall pull to "+filename+": ", err.Error())
 		return
